@@ -1,11 +1,9 @@
 package main
 
 import (
-	"os"
-
 	"github.com/francisco3ferraz/bare-git/internal/config"
 	"github.com/francisco3ferraz/bare-git/internal/server"
-	"github.com/rs/zerolog"
+	"github.com/francisco3ferraz/bare-git/internal/utils"
 )
 
 func main() {
@@ -14,7 +12,7 @@ func main() {
 		panic("Failed to load configuration: " + err.Error())
 	}
 
-	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
+	logger := utils.NewLogger(cfg.LogLevel, cfg.Environment)
 
 	// TODO: Manage database connection lifecycle
 
