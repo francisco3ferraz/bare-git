@@ -1,7 +1,9 @@
 package main
 
 import (
+	"github.com/francisco3ferraz/bare-git/internal/auth"
 	"github.com/francisco3ferraz/bare-git/internal/config"
+	"github.com/francisco3ferraz/bare-git/internal/database"
 	"github.com/francisco3ferraz/bare-git/internal/server"
 	"github.com/francisco3ferraz/bare-git/internal/utils"
 )
@@ -14,7 +16,12 @@ func main() {
 
 	logger := utils.NewLogger(cfg.LogLevel, cfg.Environment)
 
-	// TODO: Manage database connection lifecycle
+	database, err := database.Connect(cfg.DatabaseURL)
+	if err != nil {
+		logger.Fatal().Err(err).Msg("Failed to connect to the database")
+	}
 
-	srv := server.NewServer(cfg, nil, &logger)
+	jwtManager := auth.NewJWTManager(cfg.JWTSecret)
+
+	srv := server.NewServer(cfg, database, &logger, jwtManager)
 }
